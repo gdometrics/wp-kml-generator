@@ -1,0 +1,115 @@
+.extra_row{
+	opacity: 0;
+	transition: all 0.25s;
+	margin-bottom: 3px;
+}
+table.widefat tr:hover .extra_row{
+	display: block;
+	opacity: 1;
+}
+
+.wkg-wrap{
+	width: 95%;
+	min-width: 640px;
+}
+
+.wkg-wrap label{
+	font-weight: bold;
+}
+
+div#wkg-icons-div{
+	float: left;
+	width: 43%;
+}
+ul#wkg-icon-list{
+	border: 1px solid #eee;
+	padding: 8px;
+	position: relative;
+	min-height: 200px;
+	overflow-y: auto;
+	height: 200px;
+	transition: all 0.15s;
+}
+
+ul#wkg-icon-list li{
+	display: inline-block;
+	text-align: center;
+}
+ul#wkg-icon-list li img{
+	display: block;
+	padding: 2px 3px;
+	transition: all 0.25s;
+	border: 1px solid #fff;
+}
+ul#wkg-icon-list li img:hover{
+	background: #e9e9e9;
+	box-shadow: 0 1px 1px #efefef;
+	border-color: #999;
+}
+ul#wkg-icon-list li input[type="radio"]:checked + img{
+	background: rgba(82, 168, 236, 0.1);
+	box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset, 0 0 8px rgba(82, 168, 236, 0.6);
+	border-color: rgba(82, 168, 236, 0.7);
+}
+
+#wkg-loc-list{
+	width:55%;
+	float: right;
+}
+
+ul#wkg-kml-list li{
+	margin-bottom: 8px;
+}
+
+.wkg-kml-list-handle{
+	width: 10px;
+	display: block;
+	background: url(../img/grippy_large.png) repeat;
+	height: 58px;
+	float: left;
+	margin-right: 2px;
+}
+
+#wkg-kml-list table{ transition: all 0.25s; }
+#wkg-kml-list input[type="radio"]:checked + table{
+	background: none repeat scroll 0 0 rgba(82, 168, 236, 0.1);
+	box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset, 0 0 6px rgba(82, 168, 236, 0.6);
+}
+
+.wkg-kml-list-table{
+	border: 1px solid #ccc;
+}
+.wkg-kml-list-table img{ padding: 1px 2px; }
+.wkg-kml-list-table input{ font-weight: normal; }
+.wkg-kml-list-table .border-left{
+	border-left: 1px solid #ccc;
+}
+
+a.wkg-remove-kml-row{
+	text-decoration: none;
+	color: #ccc;
+	transition: all 0.25s;
+	font-size: 18px;
+}
+a.wkg-remove-kml-row:hover{
+	text-decoration: none;
+	color: #333;
+}
+
+.wkg-setting-row{
+	margin: 12px 0 6px;
+}
+.wkg-setting-row label{
+	width: 100px;
+	text-align: right;
+	display: inline-block;
+	margin-right: 8px;
+}
+.wkg-setting-row input[type="checkbox"]{
+	margin-left: 5px;
+}
+.wkg-setting-row .wkg-row-description{
+	display: block;
+	color: #666;
+	margin: 3px 0 0 110px;
+}
