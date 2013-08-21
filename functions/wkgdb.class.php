@@ -52,12 +52,6 @@ class Wkgdb{
         $sql = "$select_sql $join_sql $where_sql $order_sql $limit_sql";
         
         return $this->wpdb->get_results($sql);
-
-//         SELECT SQL_CALC_FOUND_ROWS idx.`id`, idx.`slug`, idx.`title`, COUNT(lst.id)
-// FROM wp_wkg_kml_index AS idx
-// LEFT JOIN wp_wkg_kml_list AS lst ON idx.id = lst.index_id
-// GROUP BY lst.index_id
-// LIMIT 0, 100;;
     }
 
 	function get_list_by_id($id = 0){

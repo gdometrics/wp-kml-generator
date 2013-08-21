@@ -65,6 +65,9 @@ function wkg_kml_generator_index_page(){
                 case 'add_success':
                     $message = 'KML list created.';
                     break;
+                case 'add_error':
+                    $message = 'Fail to create KML list, please retry.';
+                    break;
                 case 'edit_success':
                     $message = 'Updated KML list.';
                     break;
@@ -554,5 +557,9 @@ function _wkg_wrap_page($title = '', $content = "", $button = '', $message = "",
 }
 
 function _wkg_wrap_message($message = ''){
-    return '<div class="updated settings-error" id="setting-error-settings_updated"><p><strong>'.__($message).'</strong></p></div>';
+    $class = 'updated';
+    if( isset($_GET['add_error']) || isset($_GET['add_error']) || isset($_GET['not_exists_error']) || isset($_GET['delete_error']) ){
+        $class = 'error';
+    }
+    return '<div class="'.$class.' settings-error" id="setting-error-settings_updated"><p><strong>'.__($message).'</strong></p></div>';
 }
