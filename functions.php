@@ -2,6 +2,7 @@
 
 require_once('functions/constants.php');
 require_once('functions/wkgdb.class.php');
+require_once('functions/shortcodes.php');
 
 require_once('functions/admin-functions.php');
 

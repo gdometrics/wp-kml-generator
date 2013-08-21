@@ -1,0 +1,24 @@
+span.wkg-kml-link{
+	background: url(../img/kml_feed_small.png) no-repeat;
+	display: inline-block;
+	height: 16px;
+	padding-left: 18px;
+	line-height: 16px;
+	vertical-align: middle;
+}
+span.wkg-no-icon{
+	background-image: none;
+	padding-left: 0;
+}
+
+span.wkg-kml-link a, span.wkg-no-icon a{
+	text-decoration: none;
+}
+
+span.wkg-kml-not-exists{
+	color: #aaa;
+	display: inline-block;
+	height: 16px;
+	line-height: 16px;
+	vertical-align: middle;
+}
