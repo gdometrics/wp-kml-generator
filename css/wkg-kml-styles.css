@@ -13,6 +13,7 @@ span.wkg-no-icon{
 
 span.wkg-kml-link a, span.wkg-no-icon a{
 	text-decoration: none;
+	font-size: 14px;
 }
 
 span.wkg-kml-not-exists{
@@ -21,4 +22,46 @@ span.wkg-kml-not-exists{
 	height: 16px;
 	line-height: 16px;
 	vertical-align: middle;
+}
+
+div.wkg-kml-list-container span.wkg-kml-link{
+	float: right;
+	font-weight: normal;
+	margin-top: 7px;
+}
+
+div.wkg-kml-list-container h3{
+	margin: 0;
+	padding: 4px 12px;
+	background: #e9e9e9;
+}
+
+div.wkg-kml-list-container ul.wkg-kml-list{
+	list-style: none;
+	margin-bottom: 0;
+}
+
+div.wkg-kml-list-container ul.wkg-kml-list li{
+	margin: 0;
+	border: 1px solid #eee;
+	padding: 3px 12px;
+}
+
+div.wkg-kml-list-container ul.wkg-kml-list li img{
+	/*float: left;*/
+	margin-right: 8px;
+}
+
+div.wkg-kml-list-container ul.wkg-kml-list li h4{
+	height: 37px;
+	line-height: 37px;
+	vertical-align: top;
+	margin: 0;
+	display: inline-block;
+}
+div.wkg-kml-list-container span.wkg-kml-powered-by{
+	text-align: right;
+	display: block;
+	background: #e9e9e9;
+	padding-right: 8px;
 }
