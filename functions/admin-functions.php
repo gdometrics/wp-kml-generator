@@ -130,7 +130,7 @@ function wkg_add_kml_page(){
     $list_id = (isset($_GET['list_id'])? $_GET['list_id']: 0);
     $function = (isset($_GET['fn'])? $_GET['fn']: 'add');
 
-    if(!empty($_POST)){
+    if(isset($_POST['wkg_kml_save'])){
         $data = array();
 
         $success = true;
@@ -220,7 +220,7 @@ function wkg_process_kml_forms(){
     $function = (isset($_GET['fn'])? $_GET['fn']: 'add');
     $list_id = (isset($_GET['list_id'])? $_GET['list_id']: 0);
 
-    if(!empty($_POST)){
+    if(isset($_POST['wkg_kml_save'])){
         $data = array();
 
         $success = true;
@@ -337,9 +337,10 @@ function wkg_settings_kml_page(){
     $message = '';
     $enable_cache = get_option(WKG_ENABLE_CACHE, 1);
     $cache_time = get_option(WKG_CACHE_TIME, 30);
+    $remove_size = get_option(WKG_RM_CACHE_SIZE, 100);
     $show_support = get_option(WKG_SHOW_SUPPORT, 0);
 
-    if(!empty($_POST)){
+    if(isset($_POST['wkg_kml_save'])){
         if(isset($_POST[WKG_FIELD_PREFIX.'cache'])){
             $enable_cache = $_POST[WKG_FIELD_PREFIX.'cache'];
             update_option(WKG_ENABLE_CACHE, $enable_cache);
