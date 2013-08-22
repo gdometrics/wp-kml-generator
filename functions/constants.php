@@ -18,6 +18,8 @@ define('WKG_FIELD_PREFIX', 'wkg_kml_');
 define('WKG_ROOT_URL', plugins_url("/", dirname(__FILE__)));
 define('WKG_ICONS_URL', plugins_url("/img/icons", dirname(__FILE__)));
 
+define('WKG_GMAP_URL', 'http://maps.google.com/maps?');
+
 $upload_dir = wp_upload_dir();
 define('WKG_TMP_PATH', $upload_dir['basedir'].'/wkg_kml_tmp');
 define('WKG_TMP_URL', $upload_dir['baseurl'].'/wkg_kml_tmp');
@@ -28,3 +30,4 @@ define('WKG_PER_PAGE', 20);
 // Options Key
 define('WKG_ENABLE_CACHE', 'wkg_enable_cache');
 define('WKG_CACHE_TIME', 'wkg_cache_time');
+define('WKG_SHOW_SUPPORT', 'wkg_show_support');

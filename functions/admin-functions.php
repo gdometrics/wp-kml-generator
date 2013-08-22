@@ -2,7 +2,7 @@
 
 function wkg_admin_menu_init() {
     //add_menu_page( $page_title, $menu_title, $capability, $menu_slug, $function, $icon_url, $position );
-    add_menu_page(WKG_PLUGIN_TITLE, WKG_PLUGIN_TITLE, 'manage_options', WKG_KML_INDEX_SLUG, 'wkg_kml_generator_index_page', '', '123.13');
+    add_menu_page(WKG_PLUGIN_TITLE, WKG_PLUGIN_TITLE, 'manage_options', WKG_KML_INDEX_SLUG, 'wkg_kml_generator_index_page', plugins_url("/img/kml_feed_small.png", dirname(__FILE__)), '123.13');
     
     add_submenu_page( WKG_KML_INDEX_SLUG, WKG_ADD_TITLE, WKG_ADD_TITLE, 'manage_options', WKG_KML_ADD_SLUG, 'wkg_add_kml_page' );
     add_submenu_page( WKG_KML_INDEX_SLUG, __(WKG_SETTINGS_TITLE), __(WKG_SETTINGS_TITLE), 'manage_options', WKG_KML_SETTINGS_SLUG, 'wkg_settings_kml_page' );
@@ -119,7 +119,7 @@ function wkg_kml_generator_index_page(){
         $body = 'No KML list created.';
     }
     
-    $add_button = '<a class="add-new-h2 wkg-add-kml-item" href="'.admin_url('admin.php?page='.WKG_KML_ADD_SLUG).'">'.__('Add').'</a>';
+    $add_button = '<a class="add-new-h2" href="'.admin_url('admin.php?page='.WKG_KML_ADD_SLUG).'">'.__('Add').'</a>';
 
     echo _wkg_wrap_page(WKG_PLUGIN_TITLE, $body, $add_button, $message);
 }
@@ -337,6 +337,7 @@ function wkg_settings_kml_page(){
     $message = '';
     $enable_cache = get_option(WKG_ENABLE_CACHE, 1);
     $cache_time = get_option(WKG_CACHE_TIME, 30);
+    $show_support = get_option(WKG_SHOW_SUPPORT, 0);
 
     if(!empty($_POST)){
         if(isset($_POST[WKG_FIELD_PREFIX.'cache'])){
@@ -347,6 +348,11 @@ function wkg_settings_kml_page(){
         if(isset($_POST[WKG_FIELD_PREFIX.'time'])){
             $cache_time = $_POST[WKG_FIELD_PREFIX.'time'];
             update_option(WKG_CACHE_TIME, $cache_time);
+        }
+
+        if(isset($_POST[WKG_FIELD_PREFIX.'support'])){
+            $show_support = $_POST[WKG_FIELD_PREFIX.'support'];
+            update_option(WKG_SHOW_SUPPORT, $show_support);
         }
 
         $message = 'Settings saved.';
@@ -365,6 +371,12 @@ function wkg_settings_kml_page(){
             <label for="'.WKG_FIELD_PREFIX.'time">'.__('Cache period').'</label>
             <input type="text" name="'.WKG_FIELD_PREFIX.'time" id="'.WKG_FIELD_PREFIX.'time" value="'.$cache_time.'" />
             <span class="wkg-row-description">Cache refresh time. ('.__('Minutes').')</span>
+        </div>
+        <hr />
+        <div class="wkg-setting-row">
+            <input type="hidden" name="'.WKG_FIELD_PREFIX.'support" id="'.WKG_FIELD_PREFIX.'support" value="0" />
+            <label for="'.WKG_FIELD_PREFIX.'support">'.__('Show "Powered by"').'</label><input type="checkbox" name="'.WKG_FIELD_PREFIX.'support" id="'.WKG_FIELD_PREFIX.'support" value="1" '.($show_support == 1? 'checked': '').' />
+            <span class="wkg-row-description">Support the plugin by adding a "Powered by" text in shortcodes.</span>
         </div>
     '.$save_button;
 

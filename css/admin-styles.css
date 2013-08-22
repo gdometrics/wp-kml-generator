@@ -100,7 +100,7 @@ a.wkg-remove-kml-row:hover{
 	margin: 12px 0 6px;
 }
 .wkg-setting-row label{
-	width: 100px;
+	width: 128px;
 	text-align: right;
 	display: inline-block;
 	margin-right: 8px;
@@ -111,5 +111,12 @@ a.wkg-remove-kml-row:hover{
 .wkg-setting-row .wkg-row-description{
 	display: block;
 	color: #666;
-	margin: 3px 0 0 110px;
+	margin: 3px 0 0 138px;
+}
+
+hr{
+	color: #ccc;
+	background-color: #ccc;
+	border: 0;
+	height: 1px;
 }
