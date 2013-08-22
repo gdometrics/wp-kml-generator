@@ -6,9 +6,9 @@ class KML{
 	}
 
 	function output($data = array(), $echo = false){
-		$this->_generate_kml($data, $echo);
+		$kml = $this->_generate_kml($data, $echo);
 
-		die();
+		return $kml;
 	}
 
 	private function _generate_kml($data = array(), $echo = false){
@@ -71,8 +71,14 @@ class KML{
 		$kml[] = ' </Document>';
 		$kml[] = '</kml>';
 		$kmlOutput = join("\n", $kml);
-		header('Content-type: application/vnd.google-earth.kml+xml');
-		echo $kmlOutput;
+
+		if($echo){
+			header('Content-type: application/vnd.google-earth.kml+xml');
+			echo $kmlOutput;
+			die();
+		}else{
+			return $kmlOutput;
+		}
 	}
 }
 /* End of kml.class.php */

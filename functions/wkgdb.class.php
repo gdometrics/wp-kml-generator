@@ -90,6 +90,19 @@ class Wkgdb{
 		return $result;
 	}
 
+	function get_cache_by_slug($slug = '', $time = 0){
+		$select_sql = "SELECT MAX(che.cache_timestamp) AS cachedfile FROM {$this->wpdb->wkg_kml_cache} AS che";
+        
+        $join_sql = "LEFT JOIN {$this->wpdb->wkg_kml_index} AS idx ON idx.`id` = che.`index_id`";
+
+        $where_sql = "WHERE idx.`slug` = '$slug'";
+
+        $sql = "$select_sql $join_sql $where_sql";
+
+        return $this->wpdb->get_var($sql);
+
+	}
+
 	function slug_exists($slug = '', $id = 0){
 		if($slug != ''){
 	        $sql = "SELECT COUNT(*) FROM {$this->wpdb->wkg_kml_index} WHERE `slug` = '$slug' AND `id` = $id";
@@ -98,6 +111,10 @@ class Wkgdb{
 		}
 
 		return true;
+	}
+
+	function insert_cache($data = array()){
+		return $this->wpdb->insert($this->wpdb->wkg_kml_cache, $data);
 	}
 
 	function insert_kml_list($data = array()){
