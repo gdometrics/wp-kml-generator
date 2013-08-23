@@ -23,6 +23,7 @@ function wkg_deleteDirectory($dirPath) {
 
 delete_option(WKG_ENABLE_CACHE);
 delete_option(WKG_CACHE_TIME);
+delete_option(WKG_RM_CACHE_SIZE);
 delete_option(WKG_SHOW_SUPPORT);
 
 global $wpdb;

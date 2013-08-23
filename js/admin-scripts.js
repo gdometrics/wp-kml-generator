@@ -66,20 +66,23 @@
 			}
 
 			if(success){
+				$('#wkg-form').append('<input type="hidden" name="'+WKG_FIELD_PREFIX+'save" value="1" />');
 				$('#wkg-form').submit();
 			}
 		});
 
 		// Sticky and Auto resize Icon List
 		if($('#wkg-icon-list').length > 0){
-			// 150
-
 	        // grab the initial top offset of the navigation
 	        var sticky_icon_list_offset_top = $('#wkg-icon-list').offset().top;
 	        var init_width = $('#wkg-icon-list').width();
 	        var init_left = $('#wkg-icon-list').offset().left;
 	        var $window = $(window);
-	        
+
+	        $.event.add(window, "resize", function(){
+	        	sticky_icon_list_offset_top = $('#wkg-icon-list').offset().top;
+	        });
+
 	        // our function that decides weather the navigation bar should have "fixed" css position or not.
 	        var sticky_icon_list = function(){
 	            var scroll_top = $(window).scrollTop(); // our current vertical position from the top
@@ -90,7 +93,7 @@
 	            	var new_height = ($window.height() -30 -110);
             		var height = (new_height > 200)? new_height: 200;
 
-	                $('#wkg-icon-list').css({ 
+	                $('#wkg-icon-list').css({
 	                    'position': 'fixed',
 	                    'width': init_width,
 	                    'top': 30,
@@ -113,6 +116,10 @@
 
 	        // run our function on load
 	        sticky_icon_list();
+
+	        $window.resize(function(){
+	        	sticky_icon_list_offset_top = $('#wkg-icon-list').offset().top;
+	        });
 
 	        // and run it again every time you scroll
 	        $(window).scroll(function() {
@@ -157,21 +164,36 @@
 			var icon_list_scroll_top = $('#wkg-icon-list').scrollTop();
 			var icon_list_height = $('#wkg-icon-list').height();
 
-			if( selected_radio_position > icon_list_scroll_top && (selected_radio_position + selected_radio.height()) < (icon_list_scroll_top + icon_list_height) ){
-
+			if( (selected_radio_position >= icon_list_scroll_top) && (selected_radio_position + selected_radio.height()) <= (icon_list_scroll_top + icon_list_height) ){
+				// No need to move
 			}else{
-				if(selected_radio_position > (icon_list_scroll_top + icon_list_height)){
+				if( (selected_radio_position < (icon_list_scroll_top + icon_list_height))
+					&& selected_radio_position > icon_list_scroll_top ){
+
+				}else if( (selected_radio_position + selected_radio.height()) > (icon_list_scroll_top + icon_list_height)){
 					var icon_img = selected_radio;
 					var pos = (icon_img.position().top +icon_img.height() - icon_list_height) + icon_list_scroll_top;
 
 					$('#wkg-icon-list').animate({
 				        scrollTop: pos +2
 				    }, 600);
-				}else{
+				}else if( selected_radio_position < (icon_list_scroll_top + icon_list_height) ){
 					$('#wkg-icon-list').animate({
 				        scrollTop: (selected_radio_position + icon_list_scroll_top) -3
 				    }, 600);
 				}
+			}
+
+			var mk_icon = $(this).find('+ table').find('[name*="wkg_kml_icon"]').val();
+			var mk_name = $(this).find('+ table').find('[name*="wkg_kml_loc_name"]').val();
+			var mk_address = $(this).find('+ table').find('[name*="wkg_kml_address"]').val();
+			var mk_lat = $(this).find('+ table').find('[name*="wkg_kml_lat"]').val();
+			var mk_lng = $(this).find('+ table').find('[name*="wkg_kml_lng"]').val();
+
+			if(mk_address || (mk_lat && mk_lng)){
+				var data = { icon: mk_icon, title: mk_name, address: mk_address, lat: mk_lat, lng: mk_lng };
+
+				$(window).trigger('gmap-marker-selected', data);
 			}
 		});
 
@@ -179,10 +201,8 @@
 			icon_field = $('[name="wkg_kml_radio"]:checked').parent().find('.wkg-icon-field');
 			img_field = $('[name="wkg_kml_radio"]:checked').parent().find('.wkg-icon-display');
 
-			//console.log(WKG_ICONS_URL+"/"+$(this).val());
-
 			icon_field.val($(this).val());
-			img_field.attr('src', WKG_ICONS_URL+"/"+$(this).val())
+			img_field.attr('src', WKG_ICONS_URL+"/"+$(this).val());
 		});
 
 		$('[name*="wkg_kml_address"]').blur(function(e){
@@ -198,6 +218,8 @@
 
 					$scope.parent().parent().parent().find('[name*=wkg_kml_lat]').val(lat);
 					$scope.parent().parent().find('[name*=wkg_kml_lng]').val(lng);
+
+					$('[name="wkg_kml_radio"]').trigger('change');
 				}
 			});
 		});
