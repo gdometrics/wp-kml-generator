@@ -9,7 +9,7 @@ function list_item_template(idx){
 \
         <input type="radio" name="'+WKG_FIELD_PREFIX+'radio" id="'+WKG_FIELD_PREFIX+'radio" value="" class="hidden" />\
         \
-        <table class="wkg-kml-list-table">\
+        <table class="wkg-marker-list-table">\
             <tr>\
                 <td rowspan="2">\
                     <input type="hidden" class="wkg-icon-field" name="'+WKG_FIELD_PREFIX+'icon['+idx+']" id="'+WKG_FIELD_PREFIX+'icon['+idx+']" value="'+wkg_first_icon_name+'" />\
