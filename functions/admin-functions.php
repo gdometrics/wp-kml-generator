@@ -26,7 +26,7 @@ function wkg_kml_generator_index_page(){
     
     $filters = array();
     if(isset($_GET['list-filter'])){
-        //$filters = explode(' ', $_GET['tracking-filter']);
+        
     }
     
     $db = new Wkgdb();
@@ -47,12 +47,15 @@ function wkg_kml_generator_index_page(){
         $table_body = '';
         
         foreach($results as $row){
-            $table_body .= '<tr>
+            $table_body .= '<tr data-kml-slug="'.$row->slug.'">
                 <td>
                     <a href="'.admin_url('admin.php?page='.WKG_KML_ADD_SLUG.'&fn=edit&list_id='.$row->id).'" class="row-title">'.$row->title.'</a>
                     <div class="extra_row"><a href="'.admin_url('admin.php?page='.WKG_KML_ADD_SLUG.'&fn=edit&list_id='.$row->id).'">'.__('Edit').'</a> | <a href="'.admin_url('admin.php?page='.WKG_KML_ADD_SLUG.'&fn=delete&list_id='.$row->id).'" class="confirm">'.__('Delete').'</a></div>
                 </td>
-                <td>'.get_site_url().'/'.$row->slug.'.kml</td>
+                <td>
+                    '.get_site_url().'/'.$row->slug.'.kml<br />
+                    <span class="wkg-italic">Download Link:</span> <span class="wkg-shortcode-wrap">[kml_link file="'.$row->slug.'.kml"]Content[/kml_link]</span> <span class="wkg-italic">KML List:</span> <span class="wkg-shortcode-wrap">[kml_list file="'.$row->slug.'.kml"]</span>
+                </td>
                 <td>'.$row->list_items.'</td>
                 <td>'.date(get_option('date_format').' '.get_option('time_format'), $row->create_date).'</td>
             </tr>';
@@ -91,13 +94,15 @@ function wkg_kml_generator_index_page(){
                 <span class="displaying-num">'.__('Total').' '.$all_items.' '.__('rows').'</span>
             </div>
         </div>';
+
+        $embed_gmap = _wkg_embed_gmap();
         
-        $body .= $items_count_div.'
-            <table class="widefat" style="margin-top: 10px;">
+        $body .= $embed_gmap.$items_count_div.'
+            <table class="widefat wkg-kml-list-table" style="margin-top: 10px;">
                 <thead>
                     <tr>
                         <th>'.__('Title').'</th>
-                        <th>'.__('URL').'</th>
+                        <th>'.__('URL').' / '.__('Shortcodes').'</th>
                         <th>'.__('List Items').'</th>
                         <th>'.__('Create Date').'</th>
                     </tr>
@@ -105,7 +110,7 @@ function wkg_kml_generator_index_page(){
                 <tfoot>
                     <tr>
                         <th>'.__('Title').'</th>
-                        <th>'.__('URL').'</th>
+                        <th>'.__('URL').' / '.__('Shortcodes').'</th>
                         <th>'.__('List Items').'</th>
                         <th>'.__('Create Date').'</th>
                     </tr>
@@ -464,7 +469,7 @@ function _get_kml_list($points = array()){
 
             <input type="radio" name="'.WKG_FIELD_PREFIX.'radio" id="'.WKG_FIELD_PREFIX.'radio" value="" class="hidden" />
             
-            <table class="wkg-kml-list-table">
+            <table class="wkg-marker-list-table">
                 <tr>
                     <td rowspan="2">
                         <input type="hidden" class="wkg-icon-field" name="'.WKG_FIELD_PREFIX.'icon['.$list_idx.']" id="'.WKG_FIELD_PREFIX.'icon['.$list_idx.']" value="'.$point['icon'].'" />
@@ -557,7 +562,7 @@ function wkg_include_js_constants(){
         var WKG_KML_INDEX_SLUG = "'.WKG_KML_INDEX_SLUG.'", WKG_KML_ADD_SLUG = "'.WKG_KML_ADD_SLUG.'", WKG_PLUGIN_TITLE = "'.WKG_PLUGIN_TITLE.'",
             WKG_ADD_TITLE = "'.WKG_ADD_TITLE.'", WKG_FIELD_PREFIX = "'.WKG_FIELD_PREFIX.'", WKG_TMP_PATH = "'.WKG_TMP_PATH.'", WKG_TMP_URL = "'.WKG_TMP_URL.'";
         var wkg_first_icon_url = "'.$first_icon['url'].'", wkg_first_icon_name = "'.$first_icon['name'].'";
-        var WKG_ROOT_URL = "'.WKG_ROOT_URL.'", WKG_ICONS_URL = "'.WKG_ICONS_URL.'";
+        var WKG_ROOT_URL = "'.WKG_ROOT_URL.'", WKG_ICONS_URL = "'.WKG_ICONS_URL.'", WKG_SITE_URL = "'.get_site_url().'";
     </script>';
 }
 

@@ -37,7 +37,6 @@
 				space: '-'
 			});
 		}
-		
 
 		// Add List Item
 		$('.wkg-add-kml-item').click(function(e){
@@ -69,6 +68,15 @@
 				$('#wkg-form').append('<input type="hidden" name="'+WKG_FIELD_PREFIX+'save" value="1" />');
 				$('#wkg-form').submit();
 			}
+		});
+
+		$('.wkg-kml-list-table tr').click(function(e){
+			var data = { filename: $(this).data('kml-slug') };
+
+			$('.wkg-kml-list-table tr').removeClass('row-selected');
+			$(this).addClass('row-selected');
+
+			$(window).trigger('gmap-kml-row-selected', data);
 		});
 
 		// Sticky and Auto resize Icon List
@@ -198,11 +206,25 @@
 		});
 
 		$('[name="wkg_kml_icon_select"]').change(function(){
-			icon_field = $('[name="wkg_kml_radio"]:checked').parent().find('.wkg-icon-field');
-			img_field = $('[name="wkg_kml_radio"]:checked').parent().find('.wkg-icon-display');
+			var fields_parent = $('[name="wkg_kml_radio"]:checked').parent();
+
+			icon_field = fields_parent.find('.wkg-icon-field');
+			img_field = fields_parent.find('.wkg-icon-display');
 
 			icon_field.val($(this).val());
 			img_field.attr('src', WKG_ICONS_URL+"/"+$(this).val());
+
+			var mk_icon = fields_parent.find('[name*="wkg_kml_icon"]').val();
+			var mk_name = fields_parent.find('[name*="wkg_kml_loc_name"]').val();
+			var mk_address = fields_parent.find('[name*="wkg_kml_address"]').val();
+			var mk_lat = fields_parent.find('[name*="wkg_kml_lat"]').val();
+			var mk_lng = fields_parent.find('[name*="wkg_kml_lng"]').val();
+			
+			if(mk_address || (mk_lat && mk_lng)){
+				var data = { icon: mk_icon, title: mk_name, address: mk_address, lat: mk_lat, lng: mk_lng };
+
+				$(window).trigger('gmap-marker-selected', data);
+			}
 		});
 
 		$('[name*="wkg_kml_address"]').blur(function(e){

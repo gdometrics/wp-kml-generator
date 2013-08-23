@@ -16,6 +16,12 @@ table.widefat tr:hover .extra_row{
 .wkg-wrap label{
 	font-weight: bold;
 }
+table.wkg-kml-list-table tr{
+	transition: all 0.25s;
+}
+table.wkg-kml-list-table tr.row-selected{
+	background: rgba(82, 168, 236, 0.1);
+}
 
 #wkg_slug_div{
 	margin-bottom: 8px;
@@ -80,14 +86,11 @@ ul#wkg-kml-list li{
 	box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset, 0 0 6px rgba(82, 168, 236, 0.6);
 }
 
-.wkg-kml-list-table{
+.wkg-kml-list-table, .wkg-marker-list-table{
 	border: 1px solid #ccc;
 }
-.wkg-kml-list-table img{ padding: 1px 2px; }
-.wkg-kml-list-table input{ font-weight: normal; }
-.wkg-kml-list-table .border-left{
-	border-left: 1px solid #ccc;
-}
+.wkg-marker-list-table img{ padding: 1px 2px; }
+.wkg-marker-list-table input{ font-weight: normal; }
 
 a.wkg-remove-kml-row{
 	text-decoration: none;
@@ -137,11 +140,10 @@ a.wkg-remove-kml-row:hover{
 #wkg-gmap-container + .wkg-gmap-container-handle{
 	width: 26px;
 	height: 23px;
-	
 	margin-left: 48%;
-	margin-bottom: 8px;
 	background: url(../img/handle-icon-actions.png) no-repeat;
 	cursor: pointer;
+	box-shadow: -2px 3px 3px #ccc;
 
 	border-right: 1px solid #ddd;
 	border-bottom: 1px solid #ddd;
@@ -155,10 +157,25 @@ a.wkg-remove-kml-row:hover{
 	border-bottom-left-radius: 3px;
 }
 
+.wkg-italic{
+	font-style: italic;
+}
+.wkg-shortcode-wrap{
+	background: #fff;
+	display: inline-block;
+	padding: 1px 3px;
+}
+
 hr{
 	color: #ccc;
 	background-color: #ccc;
 	border: 0;
 	height: 1px;
 	margin: 8px;
+}
+
+@media only screen and ( max-width: 480px ) {
+	#wkg-gmap-container, #wkg-gmap-container + .wkg-gmap-container-handle, .wkg-kml-list-handle{
+		display: none;
+	}
 }

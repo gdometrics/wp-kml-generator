@@ -1,11 +1,11 @@
 <?php 
 /*
 Plugin Name: Simple KML Generator
-Plugin URI: http://wcept.com/
-Description: Plugin for displaying products from an OSCommerce shopping cart database
-Author: Kingsley Chan
-Version: 1.0
-Author URI: http://wcept.com/
+Plugin URI: https://github.com/kingkong123
+Description: Plugin for generating KML files for Google Maps and Google Earth
+Author: Kingkong123
+Version: 1.0.0
+Author URI: https://github.com/kingkong123
 */
 
 require_once('functions.php');

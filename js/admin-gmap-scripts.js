@@ -1,6 +1,5 @@
 (function($) {
 	var gmap = null;
-	var iii = 0;
 
 	var markersArray = [];
 
@@ -21,7 +20,7 @@
 			}
 
 			setTimeout(function(){
-				$(window).trigger('resize');
+				$(window).trigger('resize').trigger('scroll');
 			},500);
 		});
 
@@ -48,12 +47,22 @@
 				}
 			}
 		});
+
+		$(window).on('gmap-kml-row-selected', function(e, data){
+			var kmlFileName = data.filename;
+			var url = WKG_SITE_URL+'/'+kmlFileName+'.kml?rand='+ (new Date().getTime());
+			var georssLayer = new google.maps.KmlLayer( url );
+			
+			deleteOverlays();
+
+			georssLayer.setMap(gmap);
+		});
 	});
 
 	function gmap_initialize(){
         var mapOptions = {
-			center: new google.maps.LatLng(-34.397, 150.644),
-			zoom: 8,
+			center: new google.maps.LatLng(0, 100),
+			zoom: 2,
 			scrollwheel: false,
 			mapTypeId: google.maps.MapTypeId.ROADMAP
         };
