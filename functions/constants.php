@@ -30,4 +30,6 @@ define('WKG_PER_PAGE', 20);
 // Options Key
 define('WKG_ENABLE_CACHE', 'wkg_enable_cache');
 define('WKG_CACHE_TIME', 'wkg_cache_time');
+define('WKG_RM_CACHE_SIZE', 'wkg_rm_cache_size');
+
 define('WKG_SHOW_SUPPORT', 'wkg_show_support');

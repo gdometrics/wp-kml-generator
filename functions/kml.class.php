@@ -11,6 +11,10 @@ class KML{
 		return $kml;
 	}
 
+	function set_header(){
+		header('Content-type: application/vnd.google-earth.kml+xml');
+	}
+
 	private function _generate_kml($data = array(), $echo = false){
 		// Creates an array of strings to hold the lines of the KML file.
 		$kml = array('<?xml version="1.0" encoding="UTF-8"?>');
@@ -73,9 +77,8 @@ class KML{
 		$kmlOutput = join("\n", $kml);
 
 		if($echo){
-			header('Content-type: application/vnd.google-earth.kml+xml');
+			$this->set_header();
 			echo $kmlOutput;
-			die();
 		}else{
 			return $kmlOutput;
 		}

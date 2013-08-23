@@ -95,7 +95,7 @@ class Wkgdb{
         
         $join_sql = "LEFT JOIN {$this->wpdb->wkg_kml_index} AS idx ON idx.`id` = che.`index_id`";
 
-        $where_sql = "WHERE idx.`slug` = '$slug'";
+        $where_sql = "WHERE idx.`slug` = '$slug' HAVING cachedfile > $time";
 
         $sql = "$select_sql $join_sql $where_sql";
 
@@ -105,7 +105,7 @@ class Wkgdb{
 
 	function slug_exists($slug = '', $id = 0){
 		if($slug != ''){
-	        $sql = "SELECT COUNT(*) FROM {$this->wpdb->wkg_kml_index} WHERE `slug` = '$slug' AND `id` = $id";
+	        $sql = "SELECT COUNT(*) FROM {$this->wpdb->wkg_kml_index} WHERE `slug` = '$slug' AND `id` <> $id";
 	        
 	        return ($this->wpdb->get_var($sql) != 0);
 		}
@@ -200,6 +200,13 @@ class Wkgdb{
 		$this->wpdb->delete($this->wpdb->wkg_kml_list, array('index_id'=>$id));
 
 		return ($error == 0);
+	}
+
+	function clear_cache($time = 0){
+		if($time > 0){
+			$sql = "DELETE FROM {$this->wpdb->wkg_kml_cache} WHERE `cache_timestamp` < $time";
+			return $this->wpdb->query($sql);
+		}
 	}
 
 	private function _clean_old_list_items($index_id = 0){

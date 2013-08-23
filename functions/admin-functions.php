@@ -234,7 +234,7 @@ function wkg_process_kml_forms(){
         }
 
         if( isset($_POST[WKG_FIELD_PREFIX.'slug']) && !empty($_POST[WKG_FIELD_PREFIX.'slug'])){
-            if(!$db->slug_exists($_POST[WKG_FIELD_PREFIX.'slug'])){
+            if(!$db->slug_exists($_POST[WKG_FIELD_PREFIX.'slug'], $list_id)){
                 $data['slug'] = $_POST[WKG_FIELD_PREFIX.'slug'];
             }else{
                 $data['slug'] = $_POST[WKG_FIELD_PREFIX.'slug'];
@@ -291,6 +291,8 @@ function wkg_process_kml_forms(){
         // END Get list data
         
         if($success){
+            $enable_cache = get_option(WKG_ENABLE_CACHE, 1);
+
             if($function == 'add'){ // Add list data to db
                 $success = $db->insert_kml_list($data);
                 if($success){
@@ -304,8 +306,16 @@ function wkg_process_kml_forms(){
             }else if($function == 'edit' && $list_id){ // Update list data to db
                 $list_data = $db->get_list_by_id($list_id);
 
-                if(!empty($list_data)){
+                if($list_data){
                     $success = $db->update_kml_list($list_id, $data);
+
+                    if($enable_cache && $success){
+                        clearCache();
+
+                        $list = $db->get_list_by_slug($data['slug']);
+                        createCache($list);
+                    }
+
                     if($success){
                         // Redirect with success message
                         wp_redirect( admin_url('admin.php?page='.WKG_KML_INDEX_SLUG.'&status=edit_success') );
@@ -336,8 +346,8 @@ function wkg_process_kml_forms(){
 function wkg_settings_kml_page(){
     $message = '';
     $enable_cache = get_option(WKG_ENABLE_CACHE, 1);
-    $cache_time = get_option(WKG_CACHE_TIME, 30);
-    $remove_size = get_option(WKG_RM_CACHE_SIZE, 100);
+    $cache_time = get_option(WKG_CACHE_TIME, 60);
+    $remove_size = get_option(WKG_RM_CACHE_SIZE, 20);
     $show_support = get_option(WKG_SHOW_SUPPORT, 0);
 
     if(isset($_POST['wkg_kml_save'])){
@@ -347,8 +357,13 @@ function wkg_settings_kml_page(){
         }
 
         if(isset($_POST[WKG_FIELD_PREFIX.'time'])){
-            $cache_time = $_POST[WKG_FIELD_PREFIX.'time'];
+            $cache_time = intval($_POST[WKG_FIELD_PREFIX.'time']);
             update_option(WKG_CACHE_TIME, $cache_time);
+        }
+
+        if(isset($_POST[WKG_FIELD_PREFIX.'rm_cache'])){
+            $remove_size = intval($_POST[WKG_FIELD_PREFIX.'rm_cache']);
+            update_option(WKG_RM_CACHE_SIZE, $remove_size);
         }
 
         if(isset($_POST[WKG_FIELD_PREFIX.'support'])){
@@ -363,6 +378,7 @@ function wkg_settings_kml_page(){
     $save_button = '<input type="submit" name="'.WKG_FIELD_PREFIX.'save" id="'.WKG_FIELD_PREFIX.'save" value="'.__('Save').'" tabindex="4" class="button-primary">';
 
     $content = '
+        <h3>Cache Control</h3>
         <div class="wkg-setting-row">
             <input type="hidden" name="'.WKG_FIELD_PREFIX.'cache" id="'.WKG_FIELD_PREFIX.'cache" value="0" />
             <label for="'.WKG_FIELD_PREFIX.'cache">'.__('Enable Cache').'</label><input type="checkbox" name="'.WKG_FIELD_PREFIX.'cache" id="'.WKG_FIELD_PREFIX.'cache" value="1" '.($enable_cache == 1? 'checked': '').' />
@@ -373,7 +389,13 @@ function wkg_settings_kml_page(){
             <input type="text" name="'.WKG_FIELD_PREFIX.'time" id="'.WKG_FIELD_PREFIX.'time" value="'.$cache_time.'" />
             <span class="wkg-row-description">Cache refresh time. ('.__('Minutes').')</span>
         </div>
+        <div class="wkg-setting-row">
+            <label for="'.WKG_FIELD_PREFIX.'rm_cache">'.__('Cache Size').'</label>
+            <input type="text" name="'.WKG_FIELD_PREFIX.'rm_cache" id="'.WKG_FIELD_PREFIX.'rm_cache" value="'.$remove_size.'" />
+            <span class="wkg-row-description">When the cache files exceed this size, the plugin will remove old cache files. ('.__('Default 20').')</span>
+        </div>
         <hr />
+        <h3>Support the plugin</h3>
         <div class="wkg-setting-row">
             <input type="hidden" name="'.WKG_FIELD_PREFIX.'support" id="'.WKG_FIELD_PREFIX.'support" value="0" />
             <label for="'.WKG_FIELD_PREFIX.'support">'.__('Show "Powered by"').'</label><input type="checkbox" name="'.WKG_FIELD_PREFIX.'support" id="'.WKG_FIELD_PREFIX.'support" value="1" '.($show_support == 1? 'checked': '').' />
@@ -405,11 +427,13 @@ function _wkg_add_kml_page($data = array(), $fn = 'add'){
     wp_enqueue_script("wkg-admin-scripts", plugins_url("/js/admin-scripts.js", dirname(__FILE__)), array('jquery', 'jquery-ui', 'string-to-slug', 'wkg-templates'));
 
     $list_title = '<div id="titlediv"><input type="text" autocomplete="off" id="title" value="'.(isset($data['title'])? $data['title']: '').'" size="20" name="'.WKG_FIELD_PREFIX.'title"></div>';
-    $kml_link = '<div id="slug_div"><label for="'.WKG_FIELD_PREFIX.'slug">KML Link:</label> '.get_site_url().'/<input type="text" name="'.WKG_FIELD_PREFIX.'slug" id="'.WKG_FIELD_PREFIX.'slug" autocomplete="off" value="'.(isset($data['slug'])? $data['slug']: '').'" size="20" />.kml</div>';
+    $kml_link = '<div id="wkg_slug_div"><label for="'.WKG_FIELD_PREFIX.'slug">KML Link:</label> '.get_site_url().'/<input type="text" name="'.WKG_FIELD_PREFIX.'slug" id="'.WKG_FIELD_PREFIX.'slug" autocomplete="off" value="'.(isset($data['slug'])? $data['slug']: '').'" size="20" />.kml</div>';
+
+    $embed_gmap = _wkg_embed_gmap();
 
     $list_body = '<div id="wkg_body">'._get_icon_list().'<div id="wkg-loc-list">'._get_kml_list((isset($data['points'])? $data['points']: array())).'</div></div>';
 
-    $content = $list_title.$kml_link.$list_body;
+    $content = $list_title.$kml_link.$embed_gmap.$list_body;
 
     echo _wkg_wrap_page($page_title, $content, $save_button, '', $_SERVER['QUERY_STRING']);
 }
@@ -421,69 +445,49 @@ function _get_kml_list($points = array()){
     $result = '<h3>Locations <a class="add-new-h2 wkg-add-kml-item" href="#">'.__('Add').'</a></h3>
         <ul id="wkg-kml-list">';
 
-    if(!empty($points)){
-        foreach($points as $point){
-            $result .= '<li id="wkg-kml-row-'.$list_idx.'">
-                <div class="wkg-kml-list-handle"></div>
-                <label>
-
-                <input type="radio" name="'.WKG_FIELD_PREFIX.'radio" id="'.WKG_FIELD_PREFIX.'radio" value="" class="hidden" />
-                
-                <table class="wkg-kml-list-table">
-                    <tr>
-                        <td rowspan="2">
-                            <input type="hidden" class="wkg-icon-field" name="'.WKG_FIELD_PREFIX.'icon['.$list_idx.']" id="'.WKG_FIELD_PREFIX.'icon['.$list_idx.']" value="'.$point['icon'].'" />
-                            <img class="wkg-icon-display" src="'.WKG_ICONS_URL.'/'.$point['icon'].'" />
-                        </td>
-                        <td><span>Name: </span></td>
-                        <td colspan="3"><input type="text" class="" name="'.WKG_FIELD_PREFIX.'loc_name['.$list_idx.']" id="'.WKG_FIELD_PREFIX.'loc_name['.$list_idx.']" value="'.$point['name'].'" size="38" /></td>
-                        <td>Lat: </td>
-                        <td><input type="text" name="'.WKG_FIELD_PREFIX.'lat['.$list_idx.']" id="'.WKG_FIELD_PREFIX.'lat['.$list_idx.']" value="'.$point['lat'].'" size="22" /></td>
-                        <td rowspan="2" valign="top"><a href="#" class="wkg-remove-kml-row" data-row="'.$list_idx.'">X</a></td>
-                    </tr>
-                    <tr>
-                        <td><span>Address: </span></td>
-                        <td colspan="3"><input type="text" name="'.WKG_FIELD_PREFIX.'address['.$list_idx.']" id="'.WKG_FIELD_PREFIX.'address['.$list_idx.']" value="'.$point['address'].'" size="38" /></td>
-                        <td>Lng: </td>
-                        <td><input type="text" name="'.WKG_FIELD_PREFIX.'lng['.$list_idx.']" id="'.WKG_FIELD_PREFIX.'lng['.$list_idx.']" value="'.$point['lng'].'" size="22" /></td>
-                    </tr>
-                </table>
-                </label>
-            </li>';
-            $list_idx++;
-        }
-    }else{
+    if(empty($points)){
+        $points = array(
+            array(
+                'icon' => $first_icon['name'],
+                'name' => '',
+                'address' => '',
+                'lat' => '',
+                'lng' => ''
+                )
+            );
+    }
+    
+    foreach($points as $point){
         $result .= '<li id="wkg-kml-row-'.$list_idx.'">
-                <div class="wkg-kml-list-handle"></div>
-                <label>
+            <div class="wkg-kml-list-handle"></div>
+            <label>
 
-                <input type="radio" name="'.WKG_FIELD_PREFIX.'radio" id="'.WKG_FIELD_PREFIX.'radio" value="" class="hidden" />
-                
-                <table class="wkg-kml-list-table">
-                    <tr>
-                        <td rowspan="2">
-                            <input type="hidden" class="wkg-icon-field" name="'.WKG_FIELD_PREFIX.'icon['.$list_idx.']" id="'.WKG_FIELD_PREFIX.'icon['.$list_idx.']" value="'.$first_icon['name'].'" />
-                            <img class="wkg-icon-display" src="'.$first_icon['url'].'" />
-                        </td>
-                        <td><span>Name: </span></td>
-                        <td colspan="3"><input type="text" class="" name="'.WKG_FIELD_PREFIX.'loc_name['.$list_idx.']" id="'.WKG_FIELD_PREFIX.'loc_name['.$list_idx.']" value="" size="38" /></td>
-                        <td>Lat: </td>
-                        <td><input type="text" name="'.WKG_FIELD_PREFIX.'lat['.$list_idx.']" id="'.WKG_FIELD_PREFIX.'lat['.$list_idx.']" value="" size="22" /></td>
-                        <td rowspan="2" valign="top"><a href="#" class="wkg-remove-kml-row" data-row="'.$list_idx.'">X</a></td>
-                    </tr>
-                    <tr>
-                        <td><span>Address: </span></td>
-                        <td colspan="3"><input type="text" name="'.WKG_FIELD_PREFIX.'address['.$list_idx.']" id="'.WKG_FIELD_PREFIX.'address['.$list_idx.']" value="" size="38" /></td>
-                        <td>Lng: </td>
-                        <td><input type="text" name="'.WKG_FIELD_PREFIX.'lng['.$list_idx.']" id="'.WKG_FIELD_PREFIX.'lng['.$list_idx.']" value="" size="22" /></td>
-                    </tr>
-                </table>
-                </label>
-            </li>';
-
+            <input type="radio" name="'.WKG_FIELD_PREFIX.'radio" id="'.WKG_FIELD_PREFIX.'radio" value="" class="hidden" />
+            
+            <table class="wkg-kml-list-table">
+                <tr>
+                    <td rowspan="2">
+                        <input type="hidden" class="wkg-icon-field" name="'.WKG_FIELD_PREFIX.'icon['.$list_idx.']" id="'.WKG_FIELD_PREFIX.'icon['.$list_idx.']" value="'.$point['icon'].'" />
+                        <img class="wkg-icon-display" src="'.WKG_ICONS_URL.'/'.$point['icon'].'" />
+                    </td>
+                    <td><span>Name: </span></td>
+                    <td colspan="3"><input type="text" class="" name="'.WKG_FIELD_PREFIX.'loc_name['.$list_idx.']" id="'.WKG_FIELD_PREFIX.'loc_name['.$list_idx.']" value="'.$point['name'].'" size="38" /></td>
+                    <td>Lat: </td>
+                    <td><input type="text" name="'.WKG_FIELD_PREFIX.'lat['.$list_idx.']" id="'.WKG_FIELD_PREFIX.'lat['.$list_idx.']" value="'.$point['lat'].'" size="22" /></td>
+                    <td rowspan="2" valign="top"><a href="#" class="wkg-remove-kml-row" data-row="'.$list_idx.'">X</a></td>
+                </tr>
+                <tr>
+                    <td><span>Address: </span></td>
+                    <td colspan="3"><input type="text" name="'.WKG_FIELD_PREFIX.'address['.$list_idx.']" id="'.WKG_FIELD_PREFIX.'address['.$list_idx.']" value="'.$point['address'].'" size="38" /></td>
+                    <td>Lng: </td>
+                    <td><input type="text" name="'.WKG_FIELD_PREFIX.'lng['.$list_idx.']" id="'.WKG_FIELD_PREFIX.'lng['.$list_idx.']" value="'.$point['lng'].'" size="22" /></td>
+                </tr>
+            </table>
+            </label>
+        </li>';
         $list_idx++;
     }
-            
+    
 
     $result .= '</ul><script>var wkg_kml_list_idx = '.$list_idx.';</script>';
 
@@ -555,6 +559,16 @@ function wkg_include_js_constants(){
         var wkg_first_icon_url = "'.$first_icon['url'].'", wkg_first_icon_name = "'.$first_icon['name'].'";
         var WKG_ROOT_URL = "'.WKG_ROOT_URL.'", WKG_ICONS_URL = "'.WKG_ICONS_URL.'";
     </script>';
+}
+
+function _wkg_embed_gmap(){
+    wp_enqueue_script("gmap-v3", '//maps.googleapis.com/maps/api/js?sensor=false', array('jquery'));
+    wp_enqueue_script("admin-gmap-scripts", plugins_url("/js/admin-gmap-scripts.js", dirname(__FILE__)), array('gmap-v3'));
+    
+    return '<div id="wkg-gmap-container">
+        <div id="wkg-gmap-canvas"></div>
+    </div>
+    <div class="wkg-gmap-container-handle"></div>';
 }
 
 function _wkg_wrap_page($title = '', $content = "", $button = '', $message = "", $slug = '', $icon = 'icon-edit', $method = 'POST'){

@@ -30,49 +30,33 @@ function kml_check(){
 
 		if(!empty($list)){
 			$enable_cache = get_option(WKG_ENABLE_CACHE, 1);
-			$cache_time = intval(get_option(WKG_CACHE_TIME, 30));
-			if($cache_time == 0){
-				$enable_cache = 0;
-			}else if($cache_time > 0){
-				$cache_time *= 60;
-			}else{
-				$cache_time = 30 * 60;
-			}
+			$cache_time = getCacheTime();
 			
 			require_once('functions/kml.class.php');
 
 			$kml = new KML();
 
-			if($enable_cache){
+			if($enable_cache && $cache_time > 0){
 				$now = time();
 
-				$cached_file = $db->get_cache_by_slug($slug, $now -$cache_time);
-				//echo $cached_file.'1';
+				$cached_file = $db->get_cache_by_slug($slug, $now - $cache_time);
 
 				if($cached_file){ // Cache found in DB
-					echo $cached_file;
+					clearCache();
 
-				}else{ // Cache not found in DB, create one
-					$result = $kml->output($list);
-
-					if(is_dir(WKG_TMP_PATH) && is_writable(WKG_TMP_PATH)){
-						$cache_file_name = $now.'';
-
-						if(!file_exists(WKG_TMP_PATH.'/'.$cache_file_name)){
-							if(file_put_contents(WKG_TMP_PATH.'/'.$cache_file_name, $result) !== false){
-								$data = array( 'index_id' => $list->id, 'cache_timestamp' => $cache_file_name );
-								$db->insert_cache($data);
-
-								header('Content-type: application/vnd.google-earth.kml+xml');
-								echo $result;
-								die();
-							}
-						}
+					if(file_exists(WKG_TMP_PATH.'/'.$cached_file)){
+						$kml->set_header();
+						echo file_get_contents(WKG_TMP_PATH.'/'.$cached_file);
+						die();
 					}
-
-					// Cannot access temp folder, direct output
-					$kml->output($list, true);
 				}
+
+				// Cache not found in DB, create one
+				createCache($list, true);
+
+				// Cannot access temp folder, direct output
+				$kml->output($list, true);
+				die();
 			}else{
 				$kml->output($list, true);
 			}
@@ -102,7 +86,8 @@ function activate_wkg(){
 	wkg_create_kml_tables();
 
 	add_option(WKG_ENABLE_CACHE, 1);
-	add_option(WKG_CACHE_TIME, 30);
+	add_option(WKG_CACHE_TIME, 60);
+	add_option(WKG_RM_CACHE_SIZE, 20);
 	add_option(WKG_SHOW_SUPPORT, 0);
 
 	// Create temp folder
