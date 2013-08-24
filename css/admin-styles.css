@@ -22,6 +22,9 @@ table.wkg-kml-list-table tr{
 table.wkg-kml-list-table tr.row-selected{
 	background: rgba(82, 168, 236, 0.1);
 }
+table.wkg-kml-list-table td{
+	cursor: pointer;
+}
 
 #wkg_slug_div{
 	margin-bottom: 8px;
