@@ -126,13 +126,13 @@ a.wkg-remove-kml-row:hover{
 	width: 100%;
 	height: 0;
 	overflow-y: hidden;
-	box-shadow: -3px 5px 6px #aaa;
 
 	margin-bottom: 0;
 	transition: all 0.25s;
 }
 #wkg-gmap-container.expand{
 	min-height: 280px;
+	box-shadow: -3px 5px 6px #aaa;
 }
 #wkg-gmap-canvas{
 	min-height: 280px;
