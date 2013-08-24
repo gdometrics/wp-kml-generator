@@ -25,37 +25,41 @@
 		});
 
 		$(window).on('gmap-marker-selected', function(e, data){
-			deleteOverlays();
+			if($('.wkg-gmap-container-handle').is(':visible')){
+				deleteOverlays();
 
-			if( (!data.lat || !data.lng) && data.address ){
-				var latLng = geoEncode(data.address);
+				if( (!data.lat || !data.lng) && data.address ){
+					var latLng = geoEncode(data.address);
 
-				if(latLng != null){
-					data.lat = latLng.lat;
-					data.lng = latLng.lng;
+					if(latLng != null){
+						data.lat = latLng.lat;
+						data.lng = latLng.lng;
+					}
 				}
-			}
 
-			addMarker(data);
+				addMarker(data);
 
-			if( !(!data.lat || !data.lng) ){
-				showOverlays();
-				gmap.panTo(new google.maps.LatLng(data.lat,data.lng));
+				if( !(!data.lat || !data.lng) ){
+					showOverlays();
+					gmap.panTo(new google.maps.LatLng(data.lat,data.lng));
 
-				if(gmap.getZoom() < 10){
-					gmap.setZoom(12);
+					if(gmap.getZoom() < 10){
+						gmap.setZoom(12);
+					}
 				}
 			}
 		});
 
 		$(window).on('gmap-kml-row-selected', function(e, data){
-			var kmlFileName = data.filename;
-			var url = WKG_SITE_URL+'/'+kmlFileName+'.kml?rand='+ (new Date().getTime());
-			var georssLayer = new google.maps.KmlLayer( url );
-			
-			deleteOverlays();
+			if($('.wkg-gmap-container-handle').is(':visible')){
+				var kmlFileName = data.filename;
+				var url = WKG_SITE_URL+'/'+kmlFileName+'.kml?rand='+ (new Date().getTime());
+				var georssLayer = new google.maps.KmlLayer( url );
+				
+				deleteOverlays();
 
-			georssLayer.setMap(gmap);
+				georssLayer.setMap(gmap);
+			}
 		});
 	});
 
