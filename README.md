@@ -18,10 +18,10 @@ Wordpress KML Generator Plugin
 [kml_link file="file_name.kml" show_icon="yes|no"]Your Download Text[/kml_link]
 ```
 Parameters:
-    file: the kml file name (required)
-    show_icon: display the blue KML icon (default "yes")
+    *file: the kml file name (required)
+    *show_icon: display the blue KML icon (default "yes")
 Content:
-    If you want a custom text for the download link, you can add your custom download text (default "Download KML")
+    *If you want a custom text for the download link, you can add your custom download text (default "Download KML")
 
 Hint: if you are not going to change the Content text, you can just input ```[kml_link file="file_name.kml"]```
 
@@ -32,9 +32,9 @@ Hint: if you are not going to change the Content text, you can just input ```[km
 [kml_list file="file_name.kml" show_title="yes|no" download_link="yes|no"]
 ```
 Parameters:
-    file: the kml file name (required)
-    show_title: display the list title (default "yes")
-    download_link: show the download link (default "yes")
+    *file: the kml file name (required)
+    *show_title: display the list title (default "yes")
+    *download_link: show the download link (default "yes")
 
 
 =========
