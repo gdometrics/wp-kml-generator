@@ -20,6 +20,7 @@ Wordpress KML Generator Plugin
 Parameters:
 * file: the kml file name (required)
 * show_icon: display the blue KML icon (default "yes")
+
 Content:
 * If you want a custom text for the download link, you can add your custom download text (default "Download KML")
 
