@@ -54,7 +54,7 @@ function wkg_kml_generator_index_page(){
                 </td>
                 <td>
                     '.get_site_url().'/'.$row->slug.'.kml<br />
-                    <span class="wkg-italic">Download Link:</span> <span class="wkg-shortcode-wrap">[kml_link file="'.$row->slug.'.kml"]Content[/kml_link]</span> <span class="wkg-italic">KML List:</span> <span class="wkg-shortcode-wrap">[kml_list file="'.$row->slug.'.kml"]</span>
+                    <span class="wkg-italic">Download Link:</span> <span class="wkg-shortcode-wrap">[kml_link file="'.$row->slug.'.kml"]Content[/kml_link]</span><br /><span class="wkg-italic">KML List:</span> <span class="wkg-shortcode-wrap">[kml_list file="'.$row->slug.'.kml"]</span>
                 </td>
                 <td>'.$row->list_items.'</td>
                 <td>'.date(get_option('date_format').' '.get_option('time_format'), $row->create_date).'</td>
