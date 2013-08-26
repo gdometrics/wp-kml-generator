@@ -1,11 +1,13 @@
 Wordpress KML Generator Plugin
 =========
 
-
 ##Admin page
 
+###Create KML
 ![Create KML](http://kingkong123.github.com/wp-kml-generator/create_kml.png)
 
+
+###KML listing
 ![View Created Lists](http://kingkong123.github.com/wp-kml-generator/display_lists.png)
 
 =========
@@ -37,6 +39,12 @@ Parameters:
 * show_title: display the list title (default "yes")
 * download_link: show the download link (default "yes")
 
+=========
+##Widgets
+
+###Download Link Widget
+
+###Show KML List Items Widget
 
 =========
 By Kingkong123
