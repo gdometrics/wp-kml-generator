@@ -1,4 +1,4 @@
-Wordpress Simple KML Generator Plugin
+Wordpress Simple KML Generator
 =========
 
 http://wordpress.org/plugins/simple-kml-generator/
