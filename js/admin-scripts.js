@@ -85,7 +85,6 @@
 	        var sticky_icon_list_offset_top = $('#wkg-icon-list').offset().top;
 	        var init_width = $('#wkg-icon-list').width();
 	        var init_left = $('#wkg-icon-list').offset().left;
-	        var $window = $(window);
 
 	        $.event.add(window, "resize", function(){
 	        	sticky_icon_list_offset_top = $('#wkg-icon-list').offset().top;
@@ -98,7 +97,7 @@
 	            // if we've scrolled more than the navigation, change its position to fixed to stick to top,
 	            // otherwise change it back to relative
 	            if (scroll_top > (sticky_icon_list_offset_top - 20)) {
-	            	var new_height = ($window.height() -30 -110);
+	            	var new_height = ($(window).height() -30 -110);
             		var height = (new_height > 200)? new_height: 200;
 
 	                $('#wkg-icon-list').css({
@@ -109,7 +108,7 @@
 	                    'height': height
 	                });
 	            }else{
-	            	var new_height = ($window.height() -(sticky_icon_list_offset_top -scroll_top) -120);
+	            	var new_height = ($(window).height() -(sticky_icon_list_offset_top -scroll_top) -120);
             		var height = (new_height > 200)? new_height: 200;
 
 	                $('#wkg-icon-list').css({
@@ -125,7 +124,7 @@
 	        // run our function on load
 	        sticky_icon_list();
 
-	        $window.resize(function(){
+	        $(window).resize(function(){
 	        	sticky_icon_list_offset_top = $('#wkg-icon-list').offset().top;
 	        });
 
