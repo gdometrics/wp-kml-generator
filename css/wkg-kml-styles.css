@@ -38,16 +38,16 @@ div.wkg-kml-list-container h3{
 	line-height: 30px;
 }
 
-div.wkg-kml-list-container ul.wkg-kml-list{
+div.wkg-kml-list-container ul.wkg-kml-list, #sidebar div.wkg-kml-list-container ul.wkg-kml-list, #sidebar div.wkg-kml-list-container ul.wkg-kml-list{
 	list-style: none;
 	margin: 0;
 	padding: 0;
 	text-indent: 0;
 }
-div.wkg-kml-list-container ul.wkg-kml-list li:before{
+div.wkg-kml-list-container ul.wkg-kml-list li:before, #sidebar div.wkg-kml-list-container ul.wkg-kml-list li:before{
 	content: "";
 }
-div.wkg-kml-list-container ul.wkg-kml-list li{
+div.wkg-kml-list-container ul.wkg-kml-list li, #sidebar div.wkg-kml-list-container ul.wkg-kml-list li{
 	margin: 0;
 	border: 1px solid #eee;
 	padding: 3px 12px;

@@ -47,7 +47,12 @@ class Wkgdb{
         
         $order_sql = "GROUP BY lst.index_id ORDER BY idx.create_date DESC";
         
-        $limit_sql = "LIMIT $offset, $limit";
+        if($limit > 0){
+        	$limit_sql = "LIMIT $offset, $limit";	
+        }else{
+        	$limit_sql = '';
+        }
+        
 
         $sql = "$select_sql $join_sql $where_sql $order_sql $limit_sql";
         

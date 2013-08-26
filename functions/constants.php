@@ -1,9 +1,15 @@
 <?php
 
+// Plugin name
+define('WKG_PLUGIN_NAME', 'wp-kml-generator');
+
 // Slug
 define('WKG_KML_INDEX_SLUG', 'kml_generate-index');
 define('WKG_KML_ADD_SLUG', 'kml_generate-add');
 define('WKG_KML_SETTINGS_SLUG', 'kml_generate-settings');
+
+define('WKG_KML_WIDGET_DL_SLUG', 'wkg_dl_link');
+define('WKG_KML_WIDGET_LIST_SLUG', 'wkg_show_list');
 
 // Label
 define('WKG_PLUGIN_TITLE', 'Simple KML Generator');
