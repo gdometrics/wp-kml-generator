@@ -1,5 +1,7 @@
-Wordpress KML Generator Plugin
+Wordpress Simple KML Generator Plugin
 =========
+
+http://wordpress.org/plugins/simple-kml-generator/
 
 ##Admin page
 
