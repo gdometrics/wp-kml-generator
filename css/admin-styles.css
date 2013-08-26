@@ -169,6 +169,10 @@ a.wkg-remove-kml-row:hover{
 	padding: 1px 3px;
 }
 
+input[id^="wkg_kml_"].error_field{
+	border-color: #B94A48;
+}
+
 hr{
 	color: #ccc;
 	background-color: #ccc;
