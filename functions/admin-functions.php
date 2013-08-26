@@ -9,8 +9,8 @@ function wkg_admin_menu_init() {
 
     add_action('admin_head', 'wkg_include_js_constants');
 }
-add_action( 'admin_menu', 'wkg_admin_menu_init' );
 
+add_action( 'admin_menu', 'wkg_admin_menu_init' );
 add_action('wp_loaded', 'wkg_process_kml_forms');
 
 function wkg_kml_generator_index_page(){
@@ -135,6 +135,8 @@ function wkg_add_kml_page(){
     $list_id = (isset($_GET['list_id'])? $_GET['list_id']: 0);
     $function = (isset($_GET['fn'])? $_GET['fn']: 'add');
 
+    $error_fields = array();
+
     if(isset($_POST['wkg_kml_save'])){
         $data = array();
 
@@ -146,6 +148,8 @@ function wkg_add_kml_page(){
         }else{
             $data['title'] = $_POST[WKG_FIELD_PREFIX.'title'];
             $success = false;
+
+            $error_fields['title'] = 'Title field is required.';
         }
 
         if( isset($_POST[WKG_FIELD_PREFIX.'slug']) && !empty($_POST[WKG_FIELD_PREFIX.'slug'])){
@@ -154,10 +158,14 @@ function wkg_add_kml_page(){
             }else{
                 $data['slug'] = $_POST[WKG_FIELD_PREFIX.'slug'];
                 $success = false;
+
+                $error_fields['slug'] = 'Slug exists.';
             }
         }else{
             $data['slug'] = $_POST[WKG_FIELD_PREFIX.'slug'];
             $success = false;
+
+            $error_fields['slug'] = 'Slug field is required.';
         }
 
         if(isset($_POST[WKG_FIELD_PREFIX.'icon']) && !empty($_POST[WKG_FIELD_PREFIX.'icon'])){
@@ -207,7 +215,7 @@ function wkg_add_kml_page(){
 
         if(!$success){
             // Repopulate the from
-            _wkg_add_kml_page($data);
+            _wkg_add_kml_page($data, $function, $error_fields);
         }
     }else{
         if($function == 'add'){
@@ -411,7 +419,7 @@ function wkg_settings_kml_page(){
     echo _wkg_wrap_page($page_title, $content, '', $message, $_SERVER['QUERY_STRING'], 'icon-options-general');
 }
 
-function _wkg_add_kml_page($data = array(), $fn = 'add'){
+function _wkg_add_kml_page($data = array(), $fn = 'add', $errors = array()){
     if($fn == 'add'){
         $page_title = WKG_ADD_TITLE;
     }else if($fn == 'edit'){
@@ -423,6 +431,30 @@ function _wkg_add_kml_page($data = array(), $fn = 'add'){
             wp_redirect( admin_url('admin.php?page='.WKG_KML_INDEX_SLUG.'&status=not_exists_error') );
         }
     }
+
+    $error_message = '';
+    $error_fields = array();
+
+    if(!empty($errors)){
+        $error_size = sizeof($errors);
+        $idx = 0;
+
+        foreach($errors as $error => $message){
+            $error_message .= $message;
+            $error_fields[] = $error;
+
+            $idx++;
+
+            if($idx < $error_size){
+                $error_message .= '<br />';
+            }
+        }
+
+        if(!empty($error_message)){
+            $error_message = '<div class="error settings-error below-h2"><p>'.$error_message.'</p></div>';
+        }
+    }
+
     $save_button = '<input type="button" name="'.WKG_FIELD_PREFIX.'save" id="'.WKG_FIELD_PREFIX.'save" value="'.__('Save').'" tabindex="4" class="button-primary">';
 
     wp_enqueue_script('jquery');
@@ -431,14 +463,14 @@ function _wkg_add_kml_page($data = array(), $fn = 'add'){
     wp_enqueue_script("wkg-templates", plugins_url("/js/templates.js", dirname(__FILE__)));
     wp_enqueue_script("wkg-admin-scripts", plugins_url("/js/admin-scripts.js", dirname(__FILE__)), array('jquery', 'jquery-ui', 'string-to-slug', 'wkg-templates'));
 
-    $list_title = '<div id="titlediv"><input type="text" autocomplete="off" id="title" value="'.(isset($data['title'])? $data['title']: '').'" size="20" name="'.WKG_FIELD_PREFIX.'title"></div>';
-    $kml_link = '<div id="wkg_slug_div"><label for="'.WKG_FIELD_PREFIX.'slug">KML Link:</label> '.get_site_url().'/<input type="text" name="'.WKG_FIELD_PREFIX.'slug" id="'.WKG_FIELD_PREFIX.'slug" autocomplete="off" value="'.(isset($data['slug'])? $data['slug']: '').'" size="20" />.kml</div>';
+    $list_title = '<div id="titlediv"><input type="text" autocomplete="off" class="'.(in_array('title', $error_fields)? 'error_field': '').'" id="title" value="'.(isset($data['title'])? $data['title']: '').'" size="20" name="'.WKG_FIELD_PREFIX.'title"></div>';
+    $kml_link = '<div id="wkg_slug_div"><label for="'.WKG_FIELD_PREFIX.'slug">KML Link:</label> '.get_site_url().'/<input type="text" class="'.(in_array('slug', $error_fields)? 'error_field': '').'" name="'.WKG_FIELD_PREFIX.'slug" id="'.WKG_FIELD_PREFIX.'slug" autocomplete="off" value="'.(isset($data['slug'])? $data['slug']: '').'" size="20" />.kml</div>';
 
     $embed_gmap = _wkg_embed_gmap();
 
     $list_body = '<div id="wkg_body">'._get_icon_list().'<div id="wkg-loc-list">'._get_kml_list((isset($data['points'])? $data['points']: array())).'</div></div>';
 
-    $content = $list_title.$kml_link.$embed_gmap.$list_body;
+    $content = $list_title.$error_message.$kml_link.$embed_gmap.$list_body;
 
     echo _wkg_wrap_page($page_title, $content, $save_button, '', $_SERVER['QUERY_STRING']);
 }
