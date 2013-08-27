@@ -3,6 +3,8 @@ Wordpress Simple KML Generator
 
 http://wordpress.org/plugins/simple-kml-generator/
 
+*This plugin does not come with front end map, but it generate location lists for use in Google Map*
+
 ##Admin page
 
 ###Create KML
@@ -28,7 +30,7 @@ Parameters:
 Content:
 * If you want a custom text for the download link, you can add your custom download text (default "Download KML")
 
-Hint: if you are not going to change the Content text, you can just input ```[kml_link file="file_name.kml"]```
+*Hint*: if you are not going to change the Content text, you can just input ```[kml_link file="file_name.kml"]```
 
 ###Show KML List Items
 
@@ -43,6 +45,8 @@ Parameters:
 
 =========
 ##Widgets
+
+The widgets comes with the same function as the shortcodes. You can edit the widget settings by dragging the widget into the widget area in the admin.
 
 ###Download Link Widget
 
