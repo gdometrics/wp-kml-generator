@@ -123,6 +123,8 @@ function wkg_kml_generator_index_page(){
     }else{
         $body = 'No KML list created.';
     }
+
+    $body .= _wkg_get_admin_footer();
     
     $add_button = '<a class="add-new-h2" href="'.admin_url('admin.php?page='.WKG_KML_ADD_SLUG).'">'.__('Add').'</a>';
 
@@ -414,7 +416,11 @@ function wkg_settings_kml_page(){
             <label for="'.WKG_FIELD_PREFIX.'support">'.__('Show "Powered by"').'</label><input type="checkbox" name="'.WKG_FIELD_PREFIX.'support" id="'.WKG_FIELD_PREFIX.'support" value="1" '.($show_support == 1? 'checked': '').' />
             <span class="wkg-row-description">Support the plugin by adding a "Powered by" text in shortcodes.</span>
         </div>
-    '.$save_button;
+        <div class="wkg-setting-row">
+            <label for="">'.__('Make a donation').'</label><a href="https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=chan%2ekingsley%40gmail%2ecom&lc=US&item_name=Kingkong123%20Wordpress%20Plugins%20Projects&no_note=0&currency_code=USD&bn=PP%2dDonationsBF%3abtn_donate_LG%2egif%3aNonHostedGuest" target="_blank"><img src="https://www.paypalobjects.com/en_US/i/btn/btn_donate_LG.gif" style="vertical-align: top;" /></a>
+            <span class="wkg-row-description">Support the plugin by making a donation.</span>
+        </div>
+    '.$save_button._wkg_get_admin_footer();
 
     echo _wkg_wrap_page($page_title, $content, '', $message, $_SERVER['QUERY_STRING'], 'icon-options-general');
 }
@@ -474,9 +480,9 @@ function _wkg_add_kml_page($data = array(), $fn = 'add', $errors = array()){
 
     $embed_gmap = _wkg_embed_gmap();
 
-    $list_body = '<div id="wkg_body">'._get_icon_list().'<div id="wkg-loc-list">'._get_kml_list((isset($data['points'])? $data['points']: array())).'</div></div>';
+    $list_body = '<div id="wkg_body">'._get_icon_list().'<div id="wkg-loc-list">'._get_kml_list((isset($data['points'])? $data['points']: array())).'</div><br style="clear: both;" /></div>';
 
-    $content = $list_title.$error_message.$kml_link.$embed_gmap.$list_body;
+    $content = $list_title.$error_message.$kml_link.$embed_gmap.$list_body._wkg_get_admin_footer();
 
     echo _wkg_wrap_page($page_title, $content, $save_button, '', $_SERVER['QUERY_STRING']);
 }
@@ -604,6 +610,15 @@ function wkg_include_js_constants(){
     </script>';
 }
 
+function _wkg_get_admin_footer(){
+    return '<hr class="wkg-line-break" />
+        <div class="wkg-admin-footer">
+            <span class="wkg-donate-link"><a href="https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=chan%2ekingsley%40gmail%2ecom&lc=US&item_name=Kingkong123%20Wordpress%20Plugins%20Projects&no_note=0&currency_code=USD&bn=PP%2dDonationsBF%3abtn_donate_LG%2egif%3aNonHostedGuest" target="_blank">Make a donation</a></span>
+            <span class="wkg-brought-to-you">brought to you by <a href="http://kingkong123.github.io/">kingkong123</a></span>
+            <br style="clear:both;" />
+        </div>';
+}
+
 function _wkg_embed_gmap(){
     if(is_ssl()){
         wp_enqueue_script("gmap-v3", 'https://maps.googleapis.com/maps/api/js?sensor=false', array('jquery'));
@@ -628,7 +643,7 @@ function _wkg_wrap_page($title = '', $content = "", $button = '', $message = "",
     }
     $title = '<div class="icon32 icon32-posts-post" id="'.$icon.'"><br></div><h2>'.$title.' '.$button.'</h2>';
     
-    return '<div class="wrap wkg-wrap"><form id="wkg-form" action="'.admin_url('admin.php?'.$slug).'" method="'.$method.'">'.$title.($message != ''? _wkg_wrap_message($message): '').$content.'</form></div>';
+    return '<div class="wrap wkg-wrap"><form id="wkg-form" action="'.admin_url('admin.php?'.$slug).'" method="'.$method.'" accept-charset="utf-8">'.$title.($message != ''? _wkg_wrap_message($message): '').$content.'</form></div>';
 }
 
 function _wkg_wrap_message($message = ''){

@@ -97,8 +97,12 @@
 	            // if we've scrolled more than the navigation, change its position to fixed to stick to top,
 	            // otherwise change it back to relative
 	            if (scroll_top > (sticky_icon_list_offset_top - 20)) {
-	            	var new_height = ($(window).height() -30 -110);
+	            	var new_height = ($(window).height() -68 -110);
             		var height = (new_height > 200)? new_height: 200;
+
+            		if( $('.wkg-admin-footer').offset().top > ($('#wkg-icon-list').offset().top + height + 78) ){
+            			height += 52;
+            		}
 
 	                $('#wkg-icon-list').css({
 	                    'position': 'fixed',
@@ -108,8 +112,12 @@
 	                    'height': height
 	                });
 	            }else{
-	            	var new_height = ($(window).height() -(sticky_icon_list_offset_top -scroll_top) -120);
+	            	var new_height = ($(window).height() -(sticky_icon_list_offset_top -scroll_top) -163);
             		var height = (new_height > 200)? new_height: 200;
+
+            		if( $('.wkg-admin-footer').offset().top > ($('#wkg-icon-list').offset().top + height + 82) ){
+            			height += 42;
+            		}
 
 	                $('#wkg-icon-list').css({
 	                	'position': '',

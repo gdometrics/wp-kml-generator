@@ -12,7 +12,7 @@ class KML{
 	}
 
 	function set_header(){
-		header('Content-type: application/vnd.google-earth.kml+xml');
+		header('Content-type: application/vnd.google-earth.kml+xml, charset=utf-8');
 	}
 
 	private function _generate_kml($data = array(), $echo = false){
@@ -21,7 +21,7 @@ class KML{
 		$kml[] = '<kml xmlns="http://earth.google.com/kml/2.2">';
 		$kml[] = ' <Document>';
 
-		$kml[] = ' <name>'.htmlentities($data->title).'</name>';
+		$kml[] = ' <name>'.htmlentities($data->title, ENT_COMPAT, 'UTF-8').'</name>';
 
 		if(isset($data->styles) && !empty($data->styles)){
 			foreach($data->styles as $style){
@@ -38,12 +38,12 @@ class KML{
 		if(isset($data->points) && !empty($data->points)){
 			foreach($data->points as $point){
 				$kml[] = ' <Placemark id="placemark' . $point->id . '">';
-				$kml[] = ' <name>' . htmlentities($point->name) . '</name>';
+				$kml[] = ' <name>' . htmlentities($point->name, ENT_COMPAT, 'UTF-8') . '</name>';
 				//$kml[] = ' <description>' . htmlentities($row['address']) . '</description>';
 				$kml[] = ' <styleUrl>#' . (chopExtension($point->icon)) .'-Style</styleUrl>';
 				if(isset($point->address) && !empty($point->address)){
-					$kml[] = ' <address>'.htmlentities($point->address).'</address>';
-					$kml[] = ' <description>' . htmlentities($point->address) . '</description>';
+					$kml[] = ' <address>'.htmlentities($point->address, ENT_COMPAT, 'UTF-8').'</address>';
+					$kml[] = ' <description>' . htmlentities($point->address, ENT_COMPAT, 'UTF-8') . '</description>';
 				}
 
 				if((isset($point->lat) && !empty($point->lat))
@@ -56,20 +56,6 @@ class KML{
 				$kml[] = ' </Placemark>';
 			}
 		}
-		// Iterates through the rows, printing a node for each row.
-		
-		// while ($row = @mysql_fetch_assoc($result)) 
-		// {
-		//   $kml[] = ' <Placemark id="placemark' . $row['id'] . '">';
-		//   $kml[] = ' <name>' . htmlentities($row['name']) . '</name>';
-		//   $kml[] = ' <description>' . htmlentities($row['address']) . '</description>';
-		//   $kml[] = ' <styleUrl>#' . ($row['type']) .'Style</styleUrl>';
-		//   $kml[] = ' <Point>';
-		//   $kml[] = ' <coordinates>' . $row['lng'] . ','  . $row['lat'] . '</coordinates>';
-		//   $kml[] = ' </Point>';
-		//   $kml[] = ' </Placemark>';
-		 
-		// } 
 
 		// End XML file
 		$kml[] = ' </Document>';
