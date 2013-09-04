@@ -1,11 +1,11 @@
 <?php 
 /*
 Plugin Name: Simple KML Generator
-Plugin URI: https://github.com/kingkong123
+Plugin URI: http://kingkong123.github.io/
 Description: Plugin for generating KML files for Google Maps and Google Earth
 Author: Kingkong123
 Version: 1.0.0
-Author URI: https://github.com/kingkong123
+Author URI: http://kingkong123.github.io/
 */
 
 require_once('functions.php');
@@ -68,11 +68,12 @@ function kml_check(){
 
 // Add plugin meta
 function wkg_plugin_links($links, $file) {  
-    $plugin = plugin_basename(__FILE__);  
+    $plugin = plugin_basename(__FILE__);
   
     if ($file == $plugin) // only for this plugin  
         return array_merge( $links,   
-            array( '<a href="admin.php?page='.WKG_KML_SETTINGS_SLUG.'">'.__(WKG_SETTINGS_TITLE).'</a>' )
+            array( '<a href="admin.php?page='.WKG_KML_SETTINGS_SLUG.'">'.__(WKG_SETTINGS_TITLE).'</a>' ),
+            array( '<a href="https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=chan%2ekingsley%40gmail%2ecom&lc=US&item_name=Kingkong123%20Wordpress%20Plugins%20Projects&no_note=0&currency_code=USD&bn=PP%2dDonationsBF%3abtn_donate_LG%2egif%3aNonHostedGuest" target="_blank">'.__('Donate').'</a>' )
         );
     return $links;  
 }  
