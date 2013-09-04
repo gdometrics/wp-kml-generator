@@ -4,7 +4,7 @@ Plugin Name: Simple KML Generator
 Plugin URI: http://kingkong123.github.io/
 Description: Plugin for generating KML files for Google Maps and Google Earth
 Author: Kingkong123
-Version: 1.0.0
+Version: 1.0.1
 Author URI: http://kingkong123.github.io/
 */
 
